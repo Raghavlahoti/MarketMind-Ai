@@ -1,0 +1,109 @@
+# ============================================================================
+# MARKETMIND AI - CI/CD BUILD & DEPLOYMENT VERIFICATION PIPELINE
+# ============================================================================
+
+name: MarketMind AI CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test_and_scan:
+    name: Test & Security Scan
+    runs-on: ubuntu-latest
+    
+    env:
+      ENV: development
+      DEBUG: "True"
+      JWT_SECRET_KEY: "test_jwt_secret_key_must_be_very_long_to_pass_validation_abcdef"
+      DATABASE_URL: "sqlite+aiosqlite:///test.db"
+      SUPABASE_URL: "https://example.supabase.co"
+      SUPABASE_SECRET_KEY: "sb_secret_mock_test_key_value"
+      NVIDIA_API_KEY: "nvapi-mock_test_api_key_value"
+      ALLOWED_ORIGINS: "http://localhost:3000,http://127.0.0.1:3000"
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pip-audit safety pytest-asyncio aiosqlite
+
+      - name: Dependency Security Scan (pip-audit)
+        run: |
+          pip-audit --desc on
+
+      - name: Dependency Security Scan (Safety)
+        run: |
+          safety check
+
+      - name: Run Production Configuration Enforcement Tests
+        run: |
+          python test_production_db_enforcement.py
+
+      - name: Run Dynamic Health Check Tests
+        run: |
+          python test_healthz.py
+
+      - name: Run Unit Tests
+        run: |
+          python -m unittest discover -s tests
+
+      - name: Run E2E Production Verification Scenarios
+        run: |
+          python test_production_verification.py
+
+  build_and_validate_containers:
+    name: Build & Validate Containers
+    runs-on: ubuntu-latest
+    needs: test_and_scan
+
+    env:
+      JWT_SECRET_KEY: "dummy_jwt_secret_for_docker_compose_config_validation"
+      DATABASE_URL: "postgresql+asyncpg://postgres:password123@localhost:5432/marketmind"
+      NVIDIA_API_KEY: "nvapi-dummy_nvidia_key_for_docker_compose_config"
+      SUPABASE_URL: "https://example.supabase.co"
+      SUPABASE_SECRET_KEY: "sb_secret_dummy_supabase_key_for_docker_compose"
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml Config
+        run: |
+          docker compose config
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build API & Worker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: marketmind-app:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Container Vulnerability Scan (Trivy)
+        uses: aquasecurity/trivy-action@v0.20.0
+        with:
+          image-ref: 'marketmind-app:latest'
+          format: 'table'
+          exit-code: '1' # Fails the build if vulnerabilities are found
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'

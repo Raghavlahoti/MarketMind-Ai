@@ -1,0 +1,23 @@
+# Environment secret files
+.env
+.env.local
+.env.*.local
+.env.example
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# Python caching
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# OS metadata
+.DS_Store
+Thumbs.db

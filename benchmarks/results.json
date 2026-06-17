@@ -1,0 +1,90 @@
+[
+  {
+    "model": "meta/llama-3.1-70b-instruct",
+    "latency_seconds": 39.46,
+    "prompt_tokens": 3261,
+    "completion_tokens": 742,
+    "total_tokens": 4003,
+    "cost": 0.00295,
+    "is_valid_json": true,
+    "rating": "Bullish",
+    "target_price": 250.0,
+    "total_citations": 0,
+    "section_lengths": {
+      "executive_summary": 779,
+      "bull_case": 559,
+      "bear_case": 535,
+      "key_risks": 275,
+      "financial_highlights": 412,
+      "sentiment_summary": 394,
+      "investment_thesis": 458
+    },
+    "total_char_length": 3412,
+    "status": "success",
+    "error": null
+  },
+  {
+    "model": "meta/llama-3.3-70b-instruct",
+    "latency_seconds": 170.29,
+    "prompt_tokens": 3261,
+    "completion_tokens": 1643,
+    "total_tokens": 4904,
+    "cost": 0.003761,
+    "is_valid_json": true,
+    "rating": "Bullish",
+    "target_price": 250.0,
+    "total_citations": 16,
+    "section_lengths": {
+      "executive_summary": 1984,
+      "bull_case": 1455,
+      "bear_case": 1306,
+      "key_risks": 795,
+      "financial_highlights": 896,
+      "sentiment_summary": 1104,
+      "investment_thesis": 609
+    },
+    "total_char_length": 8149,
+    "status": "success",
+    "error": null
+  },
+  {
+    "model": "nvidia/llama-3.1-nemotron-70b-instruct",
+    "latency_seconds": 0.35,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0,
+    "cost": 0.0,
+    "is_valid_json": false,
+    "rating": "N/A",
+    "target_price": "N/A",
+    "total_citations": 0,
+    "section_lengths": {},
+    "total_char_length": 0,
+    "status": "failed",
+    "error": "Error code: 404 - {'status': 404, 'title': 'Not Found', 'detail': \"Function '9b96341b-9791-4db9-a00d-4e43aa192a39': Not found for account '9AR2cIVXipdMVd6k22y-WAX8b-uePN5mKPvsERCRYSw'\"}"
+  },
+  {
+    "model": "meta/llama-3.1-8b-instruct",
+    "latency_seconds": 5.53,
+    "prompt_tokens": 3475,
+    "completion_tokens": 1120,
+    "total_tokens": 4595,
+    "cost": 0.000689,
+    "is_valid_json": true,
+    "rating": "Bullish",
+    "target_price": 245.19,
+    "total_citations": 12,
+    "section_lengths": {
+      "executive_summary": 1079,
+      "bull_case": 883,
+      "bear_case": 634,
+      "key_risks": 507,
+      "financial_highlights": 428,
+      "sentiment_summary": 623,
+      "investment_thesis": 704
+    },
+    "total_char_length": 4858,
+    "status": "success",
+    "error": null
+  }
+]

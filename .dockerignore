@@ -1,0 +1,32 @@
+# Git configuration
+.git
+.gitignore
+
+# Virtual environment
+.venv
+venv
+ENV
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local databases & logs
+*.db
+*.log
+test_integrity.db
+test_phase8b_infra.db
+test_production_verify.db
+
+# Docker files
+docker-compose.yml
+
+# IDE configurations
+.vscode/
+.idea/
+.gemini/

@@ -1,0 +1,1316 @@
+openapi: 3.0.0
+info:
+  title: MarketMind AI - Financial Research Platform API
+  description: >
+    Production-ready REST API contract for the MarketMind AI Financial Research Platform.
+    Provides endpoints for user authentication, stock listing, company profiling,
+    analyst consensus tracking, stock pricing charts, earnings call transcripts,
+    automated research runs, semantic vector searches (RAG), watchlists, scheduled cron jobs, and alerts.
+  version: 1.0.0
+servers:
+  - url: https://api.marketmind.ai/v1
+    description: Production API Server
+paths:
+  # -------------------------------------------------------------------------
+  # AUTHENTICATION
+  # -------------------------------------------------------------------------
+  /auth/register:
+    post:
+      summary: Register a new user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: analyst.jane@marketmind.ai
+                password:
+                  type: string
+                  format: password
+                  example: superSecretPwd123!
+                first_name:
+                  type: string
+                  example: Jane
+                last_name:
+                  type: string
+                  example: Doe
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Email already in use or validation failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/login:
+    post:
+      summary: Authenticate user and issue token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: analyst.jane@marketmind.ai
+                password:
+                  type: string
+                  format: password
+                  example: superSecretPwd123!
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  token_type:
+                    type: string
+                    example: bearer
+        '401':
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # -------------------------------------------------------------------------
+  # STOCKS & EQUITIES
+  # -------------------------------------------------------------------------
+  /stocks:
+    get:
+      summary: List and search tracked stock symbols
+      tags:
+        - Stocks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          description: Search term matching ticker or company name (supports fuzzy match)
+          required: false
+          schema:
+            type: string
+            example: App
+        - name: sector
+          in: query
+          required: false
+          schema:
+            type: string
+            example: Technology
+        - name: exchange
+          in: query
+          required: false
+          schema:
+            type: string
+            example: NASDAQ
+      responses:
+        '200':
+          description: A list of stocks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Stock'
+
+  /stocks/{id}:
+    get:
+      summary: Get details of a specific stock
+      tags:
+        - Stocks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Stock found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockDetail'
+        '404':
+          description: Stock not found
+
+  /stocks/{id}/profile:
+    get:
+      summary: Retrieve detailed Yahoo Finance profile metadata
+      tags:
+        - Stocks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Company profile fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyProfile'
+
+  /stocks/{id}/consensus:
+    get:
+      summary: Fetch external analyst ratings consensus and target pricing
+      tags:
+        - Stocks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Consensus details fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalystConsensus'
+
+  /stocks/{symbol}/prices:
+    get:
+      summary: Fetch historical prices (time-series chart data)
+      tags:
+        - Stocks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            example: AAPL
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+            example: '2026-01-01'
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+            example: '2026-06-05'
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+            example: 50
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            example: 0
+      responses:
+        '200':
+          description: Price logs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStockPriceResponse'
+
+  /stocks/{symbol}/fundamentals:
+    get:
+      summary: Fetch corporate fundamentals history
+      tags:
+        - Stocks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            example: AAPL
+        - name: period_type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [annual, quarterly, trailing_twelve_months]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            example: 10
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            example: 0
+      responses:
+        '200':
+          description: Fundamentals list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCompanyFundamentalResponse'
+
+  /stocks/{id}/transcripts:
+    get:
+      summary: Fetch earnings transcripts catalog and transcript text
+      tags:
+        - Stocks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: year
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Transcripts list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EarningsTranscript'
+
+  # -------------------------------------------------------------------------
+  # NEWS & MARKET EVENTS
+  # -------------------------------------------------------------------------
+  /news/{symbol}:
+    get:
+      summary: Fetch news articles referencing a stock symbol
+      tags:
+        - News
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            example: AAPL
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: News articles successfully fetched (paginated)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNewsResponse'
+
+  /news/{symbol}/latest:
+    get:
+      summary: Fetch latest cached news articles from database cache
+      tags:
+        - News
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            example: AAPL
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Latest cached news articles successfully fetched (paginated)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNewsResponse'
+
+  /news/{symbol}/refresh:
+    get:
+      summary: Force an immediate refresh of news articles from external RSS sources
+      tags:
+        - News
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            example: AAPL
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: News articles refreshed and returned (paginated)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNewsResponse'
+
+  # -------------------------------------------------------------------------
+  # RESEARCH WORKFLOW & REPORTS
+  # -------------------------------------------------------------------------
+  /research/{symbol}/generate:
+    post:
+      summary: Trigger an AI-powered stock research run for a stock symbol
+      tags:
+        - Research
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            example: AAPL
+      responses:
+        '202':
+          description: Run job accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResearchRun'
+
+  /research/runs/{id}:
+    get:
+      summary: Fetch research job run status
+      tags:
+        - Research
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Run details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResearchRun'
+
+  /research/{symbol}:
+    get:
+      summary: Fetch generated research reports list for a stock symbol
+      tags:
+        - Research
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            example: AAPL
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Reports list successfully fetched (paginated)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResearchReportResponse'
+
+  /research/{symbol}/latest:
+    get:
+      summary: Fetch the latest completed research report for a stock symbol
+      tags:
+        - Research
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            example: AAPL
+      responses:
+        '200':
+          description: Latest report details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResearchReport'
+
+  /alerts:
+    get:
+      summary: List user alerts configurations
+      tags:
+        - Notifications
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: stock_id
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: triggered_only
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Active configurations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alert'
+    post:
+      summary: Configure a new price/sentiment trigger alert
+      tags:
+        - Notifications
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - alert_type
+                - target_value
+              properties:
+                stock_id:
+                  type: string
+                  format: uuid
+                ticker:
+                  type: string
+                alert_type:
+                  type: string
+                  enum: [price_above, price_below, sentiment_above, sentiment_below, new_research_report]
+                target_value:
+                  type: number
+                  example: 170.0
+      responses:
+        '201':
+          description: Alert created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+
+  /alerts/{id}:
+    get:
+      summary: Retrieve details of a specific alert trigger
+      tags:
+        - Notifications
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Alert metadata fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+    delete:
+      summary: Delete an alert trigger
+      tags:
+        - Notifications
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Deleted successfully
+
+  /alerts/evaluate/{symbol}:
+    post:
+      summary: Trigger immediate evaluation of active alerts for a stock symbol
+      tags:
+        - Notifications
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            example: AAPL
+      responses:
+        '200':
+          description: Alerts evaluated successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    alert_id:
+                      type: string
+                      format: uuid
+                    alert_type:
+                      type: string
+                    stock_ticker:
+                      type: string
+                    target_value:
+                      type: number
+                    current_value:
+                      type: number
+                    triggered:
+                      type: boolean
+                    message:
+                      type: string
+
+  # -------------------------------------------------------------------------
+  # WATCHLISTS & CRON SCHEDULES
+  # -------------------------------------------------------------------------
+  /watchlists:
+    get:
+      summary: List user watchlists
+      tags:
+        - Watchlists
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Watchlists list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Watchlist'
+    post:
+      summary: Create a new watchlist folder
+      tags:
+        - Watchlists
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: Tech Watch
+                description:
+                  type: string
+                  example: High-cap growth stocks
+      responses:
+        '201':
+          description: Watchlist created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Watchlist'
+
+  /watchlists/{id}/items:
+    post:
+      summary: Add a stock ticker to a watchlist
+      tags:
+        - Watchlists
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - stock_id
+              properties:
+                stock_id:
+                  type: string
+                  format: uuid
+                sort_order:
+                  type: integer
+                  default: 0
+      responses:
+        '201':
+          description: Stock linked to watchlist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchlistItem'
+
+  /watchlists/{id}/items/{stock_id}:
+    delete:
+      summary: Remove a stock from a watchlist
+      tags:
+        - Watchlists
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: stock_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Stock removed from list
+
+  /jobs:
+    get:
+      summary: List active research cron schedules
+      tags:
+        - Workflows
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Cron jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduledJob'
+    post:
+      summary: Create a new automated recurring research generation
+      tags:
+        - Workflows
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - stock_id
+                - job_name
+                - cron_expression
+              properties:
+                stock_id:
+                  type: string
+                  format: uuid
+                job_name:
+                  type: string
+                  example: AAPL Post-Market Daily Gen
+                cron_expression:
+                  type: string
+                  example: "0 17 * * 1-5"
+      responses:
+        '201':
+          description: Recurring job saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduledJob'
+
+  # -------------------------------------------------------------------------
+  # SEMANTIC VECTOR SEARCH (RAG)
+  # -------------------------------------------------------------------------
+  /search/semantic:
+    post:
+      summary: Query database context semantics using text embeddings
+      description: Performs a cosine similarity distance search against scraped text chunks.
+      tags:
+        - AI Search
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - query_vector
+                - dimension
+              properties:
+                query_vector:
+                  type: array
+                  items:
+                    type: number
+                  description: Array representing query embeddings (dimension independent).
+                  example: [0.015, -0.024, 0.081]
+                dimension:
+                  type: integer
+                  example: 1536
+                limit:
+                  type: integer
+                  default: 5
+      responses:
+        '200':
+          description: Top matched semantic chunks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    content_chunk:
+                      type: string
+                    source_type:
+                      type: string
+                    source_id:
+                      type: string
+                      format: uuid
+                    cosine_distance:
+                      type: number
+                      example: 0.1245
+
+# ---------------------------------------------------------------------------
+# COMPONENTS
+# ---------------------------------------------------------------------------
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    Stock:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        ticker:
+          type: string
+        name:
+          type: string
+        exchange:
+          type: string
+        sector:
+          type: string
+        industry:
+          type: string
+        is_active:
+          type: boolean
+
+    StockDetail:
+      allOf:
+        - $ref: '#/components/schemas/Stock'
+        - type: object
+          properties:
+            profile:
+              $ref: '#/components/schemas/CompanyProfile'
+            consensus:
+              $ref: '#/components/schemas/AnalystConsensus'
+
+    CompanyProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        description:
+          type: string
+        headquarters:
+          type: string
+        ceo:
+          type: string
+        employees:
+          type: integer
+        website:
+          type: string
+        founded_year:
+          type: integer
+        market_cap:
+          type: number
+        shares_outstanding:
+          type: number
+        updated_at:
+          type: string
+          format: date-time
+
+    AnalystConsensus:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        buy_count:
+          type: integer
+        hold_count:
+          type: integer
+        sell_count:
+          type: integer
+        average_target_price:
+          type: number
+        updated_at:
+          type: string
+          format: date-time
+
+    StockPrice:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        price_date:
+          type: string
+          format: date
+        open_price:
+          type: number
+        high_price:
+          type: number
+        low_price:
+          type: number
+        close_price:
+          type: number
+        volume:
+          type: integer
+        adjusted_close:
+          type: number
+
+    CompanyFundamental:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        report_date:
+          type: string
+          format: date
+        period_type:
+          type: string
+        revenue:
+          type: number
+        net_income:
+          type: number
+        eps:
+          type: number
+        ebitda:
+          type: number
+        assets:
+          type: number
+        liabilities:
+          type: number
+        cash_flow:
+          type: number
+        metadata:
+          type: object
+
+    NewsArticle:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        summary:
+          type: string
+        source_name:
+          type: string
+        url:
+          type: string
+        published_at:
+          type: string
+          format: date-time
+
+    EarningsTranscript:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        quarter:
+          type: integer
+        year:
+          type: integer
+        publish_date:
+          type: string
+          format: date
+        raw_text:
+          type: string
+        sections:
+          type: array
+          items:
+            type: object
+        metadata:
+          type: object
+
+    ResearchRun:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        stock_id:
+          type: string
+          format: uuid
+        trigger_type:
+          type: string
+        status:
+          type: string
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+        error_message:
+          type: string
+        config:
+          type: object
+
+    ResearchReport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        summary:
+          type: string
+        target_price:
+          type: number
+        rating:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    ReportSection:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        section_type:
+          type: string
+        content:
+          type: string
+
+    Sentiment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        stock_id:
+          type: string
+          format: uuid
+        sentiment_score:
+          type: number
+        sentiment_label:
+          type: string
+        explanation:
+          type: string
+        confidence_score:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+
+    Watchlist:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    WatchlistItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        watchlist_id:
+          type: string
+          format: uuid
+        stock_id:
+          type: string
+          format: uuid
+        added_at:
+          type: string
+          format: date-time
+        sort_order:
+          type: integer
+
+    ScheduledJob:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        job_name:
+          type: string
+        cron_expression:
+          type: string
+        is_active:
+          type: boolean
+        last_run_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+
+    Alert:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        alert_type:
+          type: string
+        target_value:
+          type: number
+        is_triggered:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad Request
+        message:
+          type: string
+          example: Field validations failed
+
+    PaginatedNewsResponse:
+      type: object
+      required:
+        - items
+        - total
+        - limit
+        - offset
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsArticle'
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    PaginatedResearchReportResponse:
+      type: object
+      required:
+        - items
+        - total
+        - limit
+        - offset
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResearchReport'
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    PaginatedStockPriceResponse:
+      type: object
+      required:
+        - items
+        - total
+        - limit
+        - offset
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StockPrice'
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    PaginatedCompanyFundamentalResponse:
+      type: object
+      required:
+        - items
+        - total
+        - limit
+        - offset
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyFundamental'
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
