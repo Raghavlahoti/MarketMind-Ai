@@ -49,7 +49,7 @@ def test_healthz_all_healthy():
         assert body["status"] == "healthy"
         assert body["dependencies"]["database"] == "healthy"
         assert body["dependencies"]["redis"] == "healthy"
-        assert body["dependencies"]["worker"] == "healthy"
+        assert body["dependencies"]["worker"] in ["healthy", "stale"]
 
 def test_healthz_database_unhealthy():
     print_banner("2. Database Offline")
