@@ -21,9 +21,9 @@ openai>=1.14.0
 yfinance>=0.2.0
 
 # Security (JWT, Encryption)
-python-jose[cryptography]>=3.3.0
+python-jose[cryptography]>=3.4.0
 passlib[bcrypt]>=1.7.4
-python-multipart>=0.0.9
+python-multipart>=0.0.18
 
 # Utility / Task Queues
 python-dotenv>=1.0.1
