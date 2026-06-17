@@ -15,7 +15,6 @@ test_and_scan:
 name: Test & Security Scan
 runs-on: ubuntu-latest
 
-```
 env:
   ENV: development
   DEBUG: "True"
@@ -62,14 +61,12 @@ steps:
   - name: Run E2E Production Verification Scenarios
     run: |
       python tests/test_production_verification.py
-```
 
 build_and_validate_containers:
 name: Build & Validate Containers
 runs-on: ubuntu-latest
 needs: test_and_scan
 
-```
 env:
   JWT_SECRET_KEY: "dummy_jwt_secret_for_docker_compose_config_validation"
   DATABASE_URL: "postgresql+asyncpg://postgres:password123@localhost:5432/marketmind"
@@ -112,4 +109,3 @@ steps:
       ignore-unfixed: true
       vuln-type: os,library
       severity: CRITICAL,HIGH
-```
