@@ -1,10 +1,28 @@
-# MarketMind AI - Financial Research Platform Database Architecture
+# MarketMind AI
 
-This repository contains the complete production-grade, highly optimized PostgreSQL database architecture for **MarketMind AI**—configured as an **AI-powered Financial Research Platform**.
+AI-powered financial research platform built with FastAPI, PostgreSQL, Qdrant, Redis and NVIDIA NIM.
 
-The database supports historical price charting, company profile metadata, analyst consensus records, corporate fundamentals, earnings call transcripts, automated recurring research jobs, real-time alert notifications, research report sections, and dynamic vector embeddings for Retrieval-Augmented Generation (RAG).
+## Features
 
----
+- AI-generated equity research reports
+- Stock sentiment analysis
+- Earnings transcript analysis
+- RAG-powered financial research
+- Watchlists and alerts
+- Background job processing
+- Vector search with Qdrant
+- PostgreSQL + pgvector support
+
+## Tech Stack
+
+- FastAPI
+- PostgreSQL
+- SQLAlchemy
+- Redis
+- Qdrant
+- NVIDIA NIM
+- Docker
+- GitHub Actions
 
 ## 1. Entity-Relationship Diagram (ERD)
 
