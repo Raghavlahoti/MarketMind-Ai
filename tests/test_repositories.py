@@ -7,6 +7,7 @@ import datetime
 import unittest
 from uuid import uuid4
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from tests.conftest import create_test_schema, drop_test_schema
 from app.core.config import settings
 from app.models import Stock, PeriodTypeEnum
 from app.repositories.stock import StockRepository
@@ -19,6 +20,10 @@ class TestRepositories(unittest.IsolatedAsyncioTestCase):
 
     async def asyncSetUp(self) -> None:
         self.engine = create_async_engine(settings.DATABASE_URL, echo=False)
+        
+        # Create schema tables for SQLite (no-op against PostgreSQL with existing schema)
+        await create_test_schema(self.engine)
+        
         self.session_factory = async_sessionmaker(self.engine, expire_on_commit=False)
         self.session = self.session_factory()
         
@@ -29,6 +34,7 @@ class TestRepositories(unittest.IsolatedAsyncioTestCase):
         self.stock_repo = StockRepository(self.session)
         self.profile_repo = CompanyProfileRepository(self.session)
         self.fundamentals_repo = FundamentalsRepository(self.session)
+
 
     async def asyncTearDown(self) -> None:
         # Roll back all database operations to leave Supabase clean

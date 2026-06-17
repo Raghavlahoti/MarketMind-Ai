@@ -8,6 +8,7 @@ import unittest
 from unittest.mock import AsyncMock, patch
 from uuid import uuid4
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from tests.conftest import create_test_schema, drop_test_schema
 from app.core.config import settings
 from app.models import Stock, CompanyProfile
 from app.services.stock import StockService
@@ -18,6 +19,10 @@ class TestStockService(unittest.IsolatedAsyncioTestCase):
 
     async def asyncSetUp(self) -> None:
         self.engine = create_async_engine(settings.DATABASE_URL, echo=False)
+        
+        # Create schema tables for SQLite (no-op against PostgreSQL with existing schema)
+        await create_test_schema(self.engine)
+        
         self.session_factory = async_sessionmaker(self.engine, expire_on_commit=False)
         self.session = self.session_factory()
         
@@ -26,6 +31,7 @@ class TestStockService(unittest.IsolatedAsyncioTestCase):
 
         # Initialize the service
         self.stock_service = StockService(self.session)
+
         
         # Mock responses
         self.mock_metadata = {
