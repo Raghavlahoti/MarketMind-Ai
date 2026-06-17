@@ -2,7 +2,6 @@
 .env
 .env.local
 .env.*.local
-.env.example
 
 # Virtual environments
 venv/
@@ -21,3 +20,22 @@ __pycache__/
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Databases & Cache
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Benchmarks & Temporary Outputs
+benchmarks/*.json
+!benchmarks/.gitkeep
+scripts/*.log
+*.log
+
+# Docker
+.dockerignore
+!Dockerfile
+!docker-compose.yml

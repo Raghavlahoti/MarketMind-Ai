@@ -18,10 +18,12 @@ htmlcov/
 
 # Local databases & logs
 *.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
 *.log
-test_integrity.db
-test_phase8b_infra.db
-test_production_verify.db
 
 # Docker files
 docker-compose.yml

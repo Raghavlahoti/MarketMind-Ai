@@ -24,6 +24,7 @@ jobs:
       SUPABASE_SECRET_KEY: "sb_secret_mock_test_key_value"
       NVIDIA_API_KEY: "nvapi-mock_test_api_key_value"
       ALLOWED_ORIGINS: "http://localhost:3000,http://127.0.0.1:3000"
+      PYTHONPATH: .
 
     steps:
       - name: Checkout Code
@@ -47,11 +48,11 @@ jobs:
 
       - name: Run Production Configuration Enforcement Tests
         run: |
-          python test_production_db_enforcement.py
+          python tests/test_production_db_enforcement.py
 
       - name: Run Dynamic Health Check Tests
         run: |
-          python test_healthz.py
+          python tests/test_healthz.py
 
       - name: Run Unit Tests
         run: |
@@ -59,7 +60,7 @@ jobs:
 
       - name: Run E2E Production Verification Scenarios
         run: |
-          python test_production_verification.py
+          python tests/test_production_verification.py
 
   build_and_validate_containers:
     name: Build & Validate Containers

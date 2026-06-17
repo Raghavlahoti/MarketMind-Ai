@@ -414,6 +414,13 @@ async def run_integrity_tests():
             assert run.status == RunStatusEnum.failed
             print("  Verified: Reconciliation sweeper recovered dangling states successfully.")
 
+        from app.core.redis import redis_manager, KEY_LOCK_RESEARCH
+        try:
+            client = await redis_manager.get_client()
+            await client.delete(f"{KEY_LOCK_RESEARCH}AAPL")
+        except Exception as lex:
+            print(f"Warning: Failed to release Redis lock in test cleanup: {lex}")
+
         await clean_up_run(run_id)
 
     # =========================================================================

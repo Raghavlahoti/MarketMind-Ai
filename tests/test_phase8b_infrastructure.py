@@ -129,7 +129,7 @@ async def run_infrastructure_tests():
         }
     SentimentService.get_stock_sentiment = mock_get_stock_sentiment
 
-    import models
+    from app import models
     tables_to_create = [
         table for name, table in Base.metadata.tables.items()
         if name != "embeddings"
