@@ -28,8 +28,12 @@ RUN groupadd -g 1000 appgroup && \
 COPY requirements.txt .
 
 # Install dependencies under the root user
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+RUN pip install --no-cache-dir --upgrade \
+    pip \
+    setuptools \
+    wheel==0.46.2 \
+    jaraco.context==6.1.0 && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application files into the working directory
 COPY . .
