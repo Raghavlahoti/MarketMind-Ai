@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+body {
+  background-color: #08090C;
+  color: #F3F4F6;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbars for a clean Bloomberg look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #08090C;
+}
+::-webkit-scrollbar-thumb {
+  background: #242838;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00E5FF;
+}
+
+/* Glowing text class */
+.glow-text-cyan {
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
+  background: rgba(15, 17, 26, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(36, 40, 56, 0.8);
+}
+
+/* Pulse animation for worker indicators */
+@keyframes indicator-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.92); }
+}
+
+.pulse-indicator {
+  animation: indicator-pulse 2s infinite ease-in-out;
+}
+
+/* Shimmering Skeleton Loader */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #0F111A 25%, #1D2130 50%, #0F111A 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite linear;
+}
+
+/* Fast Pulse */
+@keyframes pulse-fast-keyframe {
+  0%, 100% { opacity: 1; filter: brightness(1.2); }
+  50% { opacity: 0.3; filter: brightness(0.8); }
+}
+
+.pulse-fast {
+  animation: pulse-fast-keyframe 1s infinite ease-in-out;
+}
+
+/* Neon Focus and Glow transitions */
+.glow-focus:focus {
+  border-color: #00E5FF;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+  outline: none;
+}
+
+.hover-glow:hover {
+  border-color: rgba(0, 229, 255, 0.4);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.08);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
