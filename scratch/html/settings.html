@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings Console | MarketMind AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#00daf3",
+                    "surface-container-low": "#1b1b1f",
+                    "error": "#ffb4ab",
+                    "surface-container": "#1f1f23",
+                    "surface": "#121316",
+                    "surface-dim": "#121316",
+                    "secondary": "#4edea3",
+                    "on-secondary-fixed": "#002113",
+                    "on-primary-container": "#00626e",
+                    "on-tertiary-fixed-variant": "#930013",
+                    "on-error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#ffb3ad",
+                    "on-background": "#e3e2e6",
+                    "on-secondary-fixed-variant": "#005236",
+                    "primary-fixed-dim": "#00daf3",
+                    "surface-container-lowest": "#0d0e11",
+                    "on-primary": "#00363d",
+                    "secondary-fixed-dim": "#4edea3",
+                    "surface-variant": "#343538",
+                    "on-primary-fixed": "#001f24",
+                    "on-error": "#690005",
+                    "tertiary-container": "#ffc1bc",
+                    "primary": "#c3f5ff",
+                    "surface-container-highest": "#343538",
+                    "on-tertiary-fixed": "#410004",
+                    "tertiary": "#ffe7e5",
+                    "on-surface": "#e3e2e6",
+                    "on-secondary-container": "#00311f",
+                    "on-primary-fixed-variant": "#004f58",
+                    "surface-bright": "#38393d",
+                    "on-tertiary-container": "#b1121f",
+                    "on-secondary": "#003824",
+                    "secondary-container": "#00a572",
+                    "outline": "#849396",
+                    "on-tertiary": "#68000a",
+                    "error-container": "#93000a",
+                    "secondary-fixed": "#6ffbbe",
+                    "inverse-primary": "#006875",
+                    "primary-container": "#00e5ff",
+                    "inverse-on-surface": "#2f3034",
+                    "tertiary-fixed": "#ffdad7",
+                    "inverse-surface": "#e3e2e6",
+                    "outline-variant": "#3b494c",
+                    "surface-container-high": "#292a2d",
+                    "primary-fixed": "#9cf0ff",
+                    "background": "#121316",
+                    "on-surface-variant": "#bac9cc"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "display": ["Space Grotesk"],
+                    "body": ["Inter"],
+                    "label": ["Space Grotesk"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #08090C;
+            color: #F3F4F6;
+            font-family: 'Inter', sans-serif;
+        }
+        .font-headline { font-family: 'Space Grotesk', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .active-tab-glow {
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
+        }
+        .glass-panel {
+            background: rgba(18, 19, 22, 0.7);
+            backdrop-filter: blur(12px);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3b494c; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00e5ff; }
+        
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #242838;
+            height: 4px;
+            border-radius: 2px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #00e5ff;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="overflow-hidden">
+<!-- Sidebar Navigation Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-outline-variant flex flex-col py-6 px-4 bg-surface z-50">
+<div class="mb-10 px-2">
+<h1 class="text-xl font-headline font-black text-primary tracking-tighter">MarketMind AI</h1>
+<p class="text-[10px] font-label uppercase tracking-widest text-on-surface-variant mt-1">Institutional Terminal</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Nav Item: Dashboard -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant font-label text-sm hover:bg-surface-variant transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- Nav Item: Market Analysis -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant font-label text-sm hover:bg-surface-variant transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl">analytics</span>
+<span>Market Analysis</span>
+</a>
+<!-- Nav Item: Portfolio -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant font-label text-sm hover:bg-surface-variant transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+<span>Portfolio</span>
+</a>
+<!-- Nav Item: Watchlist -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant font-label text-sm hover:bg-surface-variant transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl">visibility</span>
+<span>Watchlist</span>
+</a>
+<!-- Nav Item: Settings (Active) -->
+<a class="flex items-center gap-3 px-3 py-2 text-primary font-bold bg-surface-container-high rounded-lg font-label text-sm active-tab-glow" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto space-y-1 pt-6 border-t border-outline-variant/30">
+<div class="p-3 mb-4 rounded-xl bg-surface-container-low border border-outline-variant/50">
+<p class="text-[10px] text-primary font-bold mb-1">PRO PLAN</p>
+<p class="text-xs text-on-surface-variant mb-3 leading-relaxed">Access NVIDIA NIM models and H100 priority.</p>
+<button class="w-full py-2 bg-primary-container text-on-primary-container rounded-lg text-xs font-bold hover:opacity-90 transition-all">Upgrade to Pro</button>
+</div>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant font-label text-sm hover:bg-surface-variant transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined text-xl">description</span>
+<span>Docs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant font-label text-sm hover:bg-surface-variant transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined text-xl">help</span>
+<span>Support</span>
+</a>
+</div>
+</aside>
+<!-- Header Section -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-surface-dim border-b border-outline-variant flex justify-between items-center px-8 z-40">
+<div class="flex items-center gap-8">
+<h2 class="font-headline text-on-surface font-bold text-lg tracking-tight">Settings</h2>
+<nav class="hidden md:flex gap-6">
+<a class="text-primary border-b-2 border-primary pb-5 text-sm font-medium transition-all" href="#profile">Profile</a>
+<a class="text-on-surface-variant hover:text-primary pb-5 text-sm font-medium transition-all" href="#api-keys">API Keys</a>
+<a class="text-on-surface-variant hover:text-primary pb-5 text-sm font-medium transition-all" href="#preferences">Preferences</a>
+<a class="text-on-surface-variant hover:text-primary pb-5 text-sm font-medium transition-all" href="#security">Security</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-all p-2 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-2"></div>
+<button class="px-5 py-2 bg-primary-container text-on-primary-container font-headline font-bold text-sm rounded-lg hover:opacity-80 transition-all">
+                Save Changes
+            </button>
+<div class="w-8 h-8 rounded-full border border-primary/30 overflow-hidden ml-2">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a financial analyst in a dark suit against a minimalist charcoal gray background. The lighting is crisp and moody, highlighting sharp features and a confident expression. The aesthetic is clean, high-end corporate noir, matching a premium dark-themed financial software interface with soft cyan rim lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLJGjIvX6lpR3M0CvayElSumkySDsQMPytRfit2HQBqsmGVQSzWV4VF6ePp3pigPQjb5u4ULyokqD2m8Fvr0_FnajuP8YrIZd01Enfje2isM7tXnGLVb87HZRgyrHE6QlGki1xnz-M7YsymiYrSMTiV1-GNK6XFaXNp99uqS_07K6zaOMfiji9i8qM7HSkqRBa4_4bUG-xIaMyhUFMak8r_hzvy4kv5F5uWkc2_yVID_xqlLg9GOPUcVtkdo9OzQO2I68tDGJq0bLM"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area (Three Panel Interaction) -->
+<main class="ml-64 mt-16 h-[calc(100vh-64px)] overflow-y-auto p-8 bg-surface-container-lowest">
+<div class="max-w-6xl mx-auto grid grid-cols-12 gap-8">
+<!-- LEFT PANEL: Navigation Sidebar for Content -->
+<div class="col-span-3 space-y-2 sticky top-0">
+<p class="text-[10px] font-headline font-bold text-on-surface-variant uppercase tracking-widest px-2 mb-4">Configuration</p>
+<a class="flex items-center justify-between w-full p-3 rounded-xl bg-surface-container-high border border-primary/20 text-on-surface transition-all" href="#profile">
+<span class="text-sm font-medium">Personal Profile</span>
+<span class="material-symbols-outlined text-primary text-lg">chevron_right</span>
+</a>
+<a class="flex items-center justify-between w-full p-3 rounded-xl hover:bg-surface-variant border border-transparent text-on-surface-variant hover:text-on-surface transition-all group" href="#api-keys">
+<span class="text-sm font-medium">API Management</span>
+<span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity text-lg">chevron_right</span>
+</a>
+<a class="flex items-center justify-between w-full p-3 rounded-xl hover:bg-surface-variant border border-transparent text-on-surface-variant hover:text-on-surface transition-all group" href="#preferences">
+<span class="text-sm font-medium">System Preferences</span>
+<span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity text-lg">chevron_right</span>
+</a>
+<div class="pt-10">
+<p class="text-[10px] font-headline font-bold text-on-surface-variant uppercase tracking-widest px-2 mb-4">Integrations</p>
+<div class="p-4 rounded-xl border border-outline-variant bg-surface/50 space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-black flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<div>
+<p class="text-xs font-bold">NVIDIA NIM</p>
+<p class="text-[10px] text-secondary">Connected</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-black flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">cloud</span>
+</div>
+<div>
+<p class="text-xs font-bold">Bloomberg B-Pipe</p>
+<p class="text-[10px] text-on-surface-variant">Configure...</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- CENTER & RIGHT PANEL: Content Sections -->
+<div class="col-span-9 space-y-12 pb-24">
+<!-- SECTION: Profile -->
+<section class="scroll-mt-24" id="profile">
+<div class="mb-6">
+<h3 class="font-headline text-2xl font-bold">Profile Settings</h3>
+<p class="text-sm text-on-surface-variant mt-1">Manage your professional identity and institutional credentials.</p>
+</div>
+<div class="bg-surface-container rounded-2xl border border-outline-variant p-8 flex items-start gap-10">
+<div class="relative group">
+<div class="w-32 h-32 rounded-full p-1 border-2 border-dashed border-primary/40 group-hover:border-primary transition-all duration-300">
+<div class="w-full h-full rounded-full overflow-hidden relative">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="Close-up of a sophisticated user avatar with a soft neon cyan backlight. The user is a professional in an obsidian-black turtleneck, centered in a circular frame. Cinematic focus, shallow depth of field, high-tech corporate branding aesthetics. The surrounding environment is a blurred dark office space with subtle trading monitor reflections." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMFgt7S1EMKxrVQCiXgU-wMavTdc7jYG7mz0cm7xME8hQSgp_lBUvBkflnxGwVzvI0iLWTMc7K97lQePct4wfUoSZZji7glURnKYv4ZGfp0SiOMkGl7vNa3Mzej1KRqLcByVvOA_qZjM1iWpJmlixO-aBRZ-dnvY465Wv5Mplw-n-1zMkULSOxH29SC3ZCQlhw4UeQ5KHQpJoCJyKf0PXjcx4AQCzf6KV6WVyv0hpW8bmVOThGfH4ZCTTx1krVBROZG2-MZ4GlvEQe"/>
+<div class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined text-primary mb-1">photo_camera</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Change</span>
+</div>
+</div>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-primary text-on-primary w-8 h-8 rounded-full flex items-center justify-center border-4 border-surface-container">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="flex-1 grid grid-cols-2 gap-6">
+<div class="space-y-1.5">
+<label class="text-[11px] font-bold uppercase text-on-surface-variant tracking-wider">Full Name</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:border-primary focus:ring-0 transition-all outline-none" type="text" value="Mateo Valencia"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-bold uppercase text-on-surface-variant tracking-wider">Institutional Email</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:border-primary focus:ring-0 transition-all outline-none" type="email" value="m.valencia@blackrock.com"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-bold uppercase text-on-surface-variant tracking-wider">Current Role</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:border-primary focus:ring-0 transition-all outline-none" type="text" value="Senior Analyst"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-bold uppercase text-on-surface-variant tracking-wider">Organization</label>
+<div class="flex items-center gap-3 w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2.5 text-sm">
+<span class="material-symbols-outlined text-primary text-sm">corporate_fare</span>
+<span>BlackRock</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION: API Keys -->
+<section class="scroll-mt-24" id="api-keys">
+<div class="mb-6 flex justify-between items-end">
+<div>
+<h3 class="font-headline text-2xl font-bold">API Management</h3>
+<p class="text-sm text-on-surface-variant mt-1">Generate and manage secure access keys for NVIDIA NIM and internal pipelines.</p>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary-container font-bold text-xs rounded-lg hover:shadow-[0_0_15px_rgba(0,229,255,0.3)] transition-all">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                            Generate New Key
+                        </button>
+</div>
+<div class="bg-surface-container rounded-2xl border border-outline-variant overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-high/50 border-b border-outline-variant">
+<tr>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Key Label</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">API Key</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr>
+<td class="px-6 py-4">
+<p class="text-sm font-bold">NVIDIA NIM Llama 3</p>
+<p class="text-[10px] text-on-surface-variant">Created: Oct 12, 2023</p>
+</td>
+<td class="px-6 py-4">
+<code class="bg-surface-container-lowest px-2 py-1 rounded text-primary text-xs font-mono">nv_••••••••••••x92</code>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold uppercase">
+<span class="w-1 h-1 rounded-full bg-secondary animate-pulse"></span>
+                                            Active
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-error hover:bg-error-container/20 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">Revoke</button>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4">
+<p class="text-sm font-bold">Market Sentiment Bot</p>
+<p class="text-[10px] text-on-surface-variant">Created: Sep 05, 2023</p>
+</td>
+<td class="px-6 py-4">
+<code class="bg-surface-container-lowest px-2 py-1 rounded text-on-surface-variant text-xs font-mono">mk_••••••••••••e11</code>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-on-surface-variant/10 text-on-surface-variant text-[10px] font-bold uppercase">
+<span class="w-1 h-1 rounded-full bg-on-surface-variant"></span>
+                                            Inactive
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-on-surface px-3 py-1.5 rounded-lg text-xs font-bold transition-all">Renew</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- SECTION: Preferences -->
+<section class="scroll-mt-24" id="preferences">
+<div class="mb-6">
+<h3 class="font-headline text-2xl font-bold">System Preferences</h3>
+<p class="text-sm text-on-surface-variant mt-1">Calibrate AI model behavior and interface notifications.</p>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<!-- Card: Model Config -->
+<div class="bg-surface-container rounded-2xl border border-outline-variant p-6 space-y-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">psychology</span>
+<h4 class="text-sm font-bold uppercase tracking-wider">Inference Model</h4>
+</div>
+<div class="space-y-4">
+<div class="space-y-1.5">
+<label class="text-[11px] font-bold text-on-surface-variant">Primary Model</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-sm appearance-none outline-none focus:border-primary">
+<option>NVIDIA Llama 3 70B NIM</option>
+<option>Mistral Large 2</option>
+<option>GPT-4o Market Optimized</option>
+</select>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="text-[11px] font-bold text-on-surface-variant">Temperature</label>
+<span class="text-xs font-mono text-primary" id="temp-value">0.7</span>
+</div>
+<input class="w-full" max="1" min="0" oninput="document.getElementById('temp-value').textContent = this.value" step="0.1" type="range" value="0.7"/>
+<div class="flex justify-between text-[10px] text-on-surface-variant uppercase font-bold">
+<span>Predictive</span>
+<span>Creative</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card: Notifications -->
+<div class="bg-surface-container rounded-2xl border border-outline-variant p-6 space-y-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">notifications_active</span>
+<h4 class="text-sm font-bold uppercase tracking-wider">Alert System</h4>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm font-medium">Flash Crash Alerts</p>
+<p class="text-[10px] text-on-surface-variant">Priority websocket notifications for volatility.</p>
+</div>
+<button class="relative inline-flex h-5 w-9 items-center rounded-full bg-primary-container" onclick="this.classList.toggle('bg-primary-container'); this.classList.toggle('bg-outline-variant')">
+<span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white transition translate-x-5"></span>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm font-medium">Model Recalibration</p>
+<p class="text-[10px] text-on-surface-variant">Alert when inference accuracy drifts &gt; 5%.</p>
+</div>
+<button class="relative inline-flex h-5 w-9 items-center rounded-full bg-primary-container" onclick="this.classList.toggle('bg-primary-container'); this.classList.toggle('bg-outline-variant')">
+<span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white transition translate-x-5"></span>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm font-medium">Institutional Reports</p>
+<p class="text-[10px] text-on-surface-variant">Daily EOD PDF digests via email.</p>
+</div>
+<button class="relative inline-flex h-5 w-9 items-center rounded-full bg-outline-variant" onclick="this.classList.toggle('bg-primary-container'); this.classList.toggle('bg-outline-variant')">
+<span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white transition translate-x-0.5"></span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Info -->
+<footer class="pt-12 border-t border-outline-variant flex justify-between items-center opacity-40">
+<p class="text-[10px] font-mono">VERSION 4.2.0-STABLE | BUILD_ID: 88201X</p>
+<div class="flex gap-4">
+<span class="text-[10px] font-mono">LATENCY: 12ms</span>
+<span class="text-[10px] font-mono">SSL: ENCRYPTED</span>
+</div>
+</footer>
+</div>
+</div>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        // Smooth scrolling for settings tabs
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Simple toggle state management
+        const toggleButtons = document.querySelectorAll('button[role="switch"]');
+        toggleButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const circle = btn.querySelector('span');
+                const isActive = circle.classList.contains('translate-x-5');
+                if(isActive) {
+                    circle.classList.replace('translate-x-5', 'translate-x-0.5');
+                    btn.classList.replace('bg-primary-container', 'bg-outline-variant');
+                } else {
+                    circle.classList.replace('translate-x-0.5', 'translate-x-5');
+                    btn.classList.replace('bg-outline-variant', 'bg-primary-container');
+                }
+            });
+        });
+    </script>
+</body></html>

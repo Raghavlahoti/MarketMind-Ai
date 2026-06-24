@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MarketMind AI | Financial Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Space+Grotesk:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(15, 17, 26, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(36, 40, 56, 0.5);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .mono-data {
+            font-family: 'Space Grotesk', monospace;
+            letter-spacing: -0.02em;
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(0, 229, 255, 0.2), transparent);
+            position: absolute;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#1b1b1f",
+                        "on-primary-container": "#00626e",
+                        "surface-container-high": "#292a2d",
+                        "inverse-primary": "#006875",
+                        "on-secondary-fixed-variant": "#005236",
+                        "error-container": "#93000a",
+                        "surface-container": "#1f1f23",
+                        "surface-variant": "#343538",
+                        "inverse-on-surface": "#2f3034",
+                        "surface-container-lowest": "#0d0e11",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-secondary-container": "#00311f",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#004f58",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#4edea3",
+                        "surface-tint": "#00daf3",
+                        "on-surface": "#e3e2e6",
+                        "on-primary": "#00363d",
+                        "surface-container-highest": "#343538",
+                        "on-tertiary": "#68000a",
+                        "on-secondary-fixed": "#002113",
+                        "primary-fixed": "#9cf0ff",
+                        "primary": "#c3f5ff",
+                        "on-background": "#e3e2e6",
+                        "outline": "#849396",
+                        "on-tertiary-fixed": "#410004",
+                        "background": "#121316",
+                        "primary-fixed-dim": "#00daf3",
+                        "on-tertiary-container": "#b1121f",
+                        "on-secondary": "#003824",
+                        "secondary-fixed-dim": "#4edea3",
+                        "on-surface-variant": "#bac9cc",
+                        "on-error": "#690005",
+                        "inverse-surface": "#e3e2e6",
+                        "on-tertiary-fixed-variant": "#930013",
+                        "on-primary-fixed": "#001f24",
+                        "outline-variant": "#3b494c",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "surface-dim": "#121316",
+                        "tertiary": "#ffe7e5",
+                        "tertiary-fixed": "#ffdad7",
+                        "tertiary-container": "#ffc1bc",
+                        "secondary-container": "#00a572",
+                        "surface-bright": "#38393d",
+                        "surface": "#121316",
+                        "primary-container": "#00e5ff"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "display": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30 selection:text-primary overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation -->
+<nav class="flex justify-between items-center w-full px-6 h-14 bg-surface border-b border-outline-variant z-50">
+<div class="flex items-center gap-8">
+<div class="font-headline text-lg font-black text-primary uppercase tracking-tight">MarketMind AI</div>
+<div class="hidden md:flex gap-6">
+<a class="font-headline text-xs uppercase tracking-widest text-primary border-b-2 border-primary pb-1" href="#">Terminal</a>
+<a class="font-headline text-xs uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all" href="#">News</a>
+<a class="font-headline text-xs uppercase tracking-widest text-on-surface-variant hover:text-primary transition-all" href="#">Signals</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-all">notifications</div>
+<div class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-all">account_balance_wallet</div>
+<div class="h-8 w-8 rounded-full border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a financial analyst in a modern office, cinematic lighting, sharp focus, obsidian dark aesthetic background, high contrast, 8k resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEzqbhK6_OFTpJF3Cklre08CoSEn1t5Hh9qwpoRUv26ED2VwNbmRzBb61dMUG6YxuR0Npm7oehI2yy_qp8cqvEeJYncsI1DjybTBplXNttIV3wz4NarDyypgBWwmHg2ORs_vhO1i6KNfhqfvTeIXRhVGzZgSoAFTYyvgfrvB7z1l9GufLgsbeuTXraLNDJG-IUWw9tskLVGYX8v7wmh793TzjNacHQNSFzACaEaA16Joio74_ePjVkeAVRyemdUcfwk8HSQkROvFRQ"/>
+</div>
+</div>
+</nav>
+<div class="flex flex-1 overflow-hidden relative">
+<!-- Sidebar Navigation (SideNavBar) -->
+<aside class="h-full w-64 border-r border-outline-variant bg-surface-container-low flex flex-col py-4 px-3 z-40">
+<button class="w-full mb-6 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-primary text-on-primary font-headline font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined text-[20px]">add_box</span>
+                New Chat
+            </button>
+<div class="space-y-1 flex-1 overflow-y-auto scrollbar-hide">
+<div class="px-2 py-2 text-[10px] uppercase tracking-widest text-on-surface-variant font-bold mb-2">Recent Queries</div>
+<div class="flex items-center gap-3 px-3 py-2 bg-surface-container-high text-primary font-bold rounded-lg cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[18px]">monitoring</span>
+<span class="truncate font-label text-sm">Apple Q4 Earnings</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface rounded-lg cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-[18px]">pie_chart</span>
+<span class="truncate font-label text-sm">NVIDIA NIM Bottleneck</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface rounded-lg cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-[18px]">star</span>
+<span class="truncate font-label text-sm">Tesla Risk Beta</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface rounded-lg cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span class="truncate font-label text-sm">Security Logs</span>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant space-y-1">
+<div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface rounded-lg cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span class="font-label text-sm">Settings</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface rounded-lg cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[18px]">help_center</span>
+<span class="font-label text-sm">Support</span>
+</div>
+<div class="mt-4 p-3 rounded-xl bg-surface-container-highest/50 border border-primary/20">
+<div class="text-[11px] text-primary font-bold uppercase tracking-wider mb-1">MarketMind Pro</div>
+<div class="text-[10px] text-on-surface-variant mb-3 leading-relaxed">Access real-time SEC data &amp; GPU bottleneck analysis.</div>
+<button class="w-full py-1.5 text-xs font-bold text-background bg-primary rounded-md hover:brightness-110 transition-all">Upgrade to Pro</button>
+</div>
+</div>
+</aside>
+<!-- Main Chat Canvas -->
+<main class="flex-1 relative flex flex-col bg-background">
+<!-- Animated Background Gradient -->
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+
+</div>
+<!-- Chat Content Area -->
+<div class="flex-1 overflow-y-auto px-6 py-10 scrollbar-hide relative z-10">
+<div class="max-w-3xl mx-auto space-y-12">
+<!-- User Message -->
+<div class="flex gap-6 items-start">
+<div class="w-8 h-8 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-sm text-on-surface-variant">person</span>
+</div>
+<div class="flex-1 text-on-surface text-base leading-relaxed font-light">
+                            What is the projected margin impact of NVIDIA's new Blackwell architecture based on recent filings? How does it compare to competitors?
+                        </div>
+</div>
+<!-- AI Message -->
+<div class="flex gap-6 items-start">
+<div class="w-8 h-8 rounded bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-sm text-primary" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<div class="flex-1 space-y-6">
+<div class="text-on-surface leading-relaxed font-light">
+                                Based on the recent SEC filings <span class="inline-flex items-center justify-center w-5 h-5 bg-surface-container-highest border border-outline-variant text-[10px] text-primary rounded-sm align-top ml-1 cursor-pointer hover:bg-primary/20 transition-colors">1</span>, NVIDIA's Blackwell architecture is expected to drive 25% margin expansion <span class="inline-flex items-center justify-center w-5 h-5 bg-surface-container-highest border border-outline-variant text-[10px] text-primary rounded-sm align-top ml-1 cursor-pointer hover:bg-primary/20 transition-colors">2</span>. This shift is primarily attributed to the increased efficiency in FP4 precision networking and the integrated liquid-cooling solutions being sold as full-rack systems.
+                            </div>
+<!-- Financial Comparison Table -->
+<div class="glass-panel rounded-lg overflow-hidden border border-outline-variant">
+<div class="px-4 py-3 bg-surface-container-high/50 border-b border-outline-variant flex justify-between items-center">
+<span class="text-[10px] font-headline font-bold text-on-surface-variant uppercase tracking-widest">NVIDIA vs Top Competitors | Margin Comparison</span>
+<span class="material-symbols-outlined text-primary text-sm">filter_list</span>
+</div>
+<div class="p-0">
+<table class="w-full text-left text-xs border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest/50 text-on-surface-variant mono-data border-b border-outline-variant">
+<th class="px-4 py-2 font-medium">TICKER</th>
+<th class="px-4 py-2 font-medium">ARCH.</th>
+<th class="px-4 py-2 font-medium">PROJ. MARGIN</th>
+<th class="px-4 py-2 font-medium text-right">BETA</th>
+</tr>
+</thead>
+<tbody class="mono-data">
+<tr class="border-b border-outline-variant/30 hover:bg-primary/5 transition-colors group">
+<td class="px-4 py-3 text-primary font-bold">NVDA</td>
+<td class="px-4 py-3">Blackwell</td>
+<td class="px-4 py-3">
+<span class="text-secondary">+25.4%</span>
+<div class="w-16 h-1 bg-surface-container-highest mt-1 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 85%"></div>
+</div>
+</td>
+<td class="px-4 py-3 text-right">1.64</td>
+</tr>
+<tr class="border-b border-outline-variant/30 hover:bg-primary/5 transition-colors">
+<td class="px-4 py-3 text-on-surface font-medium">AMD</td>
+<td class="px-4 py-3">MI325X</td>
+<td class="px-4 py-3">
+<span class="text-secondary">+12.2%</span>
+<div class="w-16 h-1 bg-surface-container-highest mt-1 rounded-full overflow-hidden">
+<div class="bg-secondary/60 h-full" style="width: 45%"></div>
+</div>
+</td>
+<td class="px-4 py-3 text-right">1.58</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-4 py-3 text-on-surface font-medium">INTC</td>
+<td class="px-4 py-3">Gaudi 3</td>
+<td class="px-4 py-3">
+<span class="text-error">-4.1%</span>
+<div class="w-16 h-1 bg-surface-container-highest mt-1 rounded-full overflow-hidden">
+<div class="bg-error h-full" style="width: 15%"></div>
+</div>
+</td>
+<td class="px-4 py-3 text-right">1.22</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="text-on-surface-variant text-sm italic font-light">
+                                Analysis note: The margin expansion in NVIDIA is outlier-scale, suggesting structural dominance in the "AI Rack" unit economics versus traditional chip sales.
+                            </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Contextual Overlay Card (Source Citations) -->
+<div class="absolute right-6 top-6 w-72 glass-panel rounded-xl shadow-2xl z-30 transform hover:-translate-y-1 transition-transform">
+<div class="p-4">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary text-lg">description</span>
+<h3 class="font-headline font-bold text-xs uppercase tracking-widest text-on-surface">Source Citations</h3>
+</div>
+<div class="space-y-4">
+<div class="group cursor-pointer">
+<div class="flex items-start gap-2">
+<span class="flex-shrink-0 w-4 h-4 mt-0.5 rounded-sm bg-surface-container-highest border border-outline-variant text-[9px] flex items-center justify-center text-primary font-bold">1</span>
+<div>
+<div class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">2024 Form 10-K</div>
+<div class="text-[10px] text-on-surface-variant mono-data">Filed Oct 20 • SEC EDGAR</div>
+</div>
+</div>
+</div>
+<div class="group cursor-pointer">
+<div class="flex items-start gap-2">
+<span class="flex-shrink-0 w-4 h-4 mt-0.5 rounded-sm bg-surface-container-highest border border-outline-variant text-[9px] flex items-center justify-center text-primary font-bold">2</span>
+<div>
+<div class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">Earnings Call Transcript</div>
+<div class="text-[10px] text-on-surface-variant mono-data">Q3 FY2025 • Nov 14</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant">
+<button class="w-full py-2 flex items-center justify-center gap-2 text-[10px] font-bold text-primary uppercase tracking-widest hover:bg-primary/5 rounded transition-all">
+                            View All Documents
+                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer Search / Input Bar -->
+<footer class="px-6 pb-8 pt-2 relative z-20">
+<div class="max-w-3xl mx-auto space-y-4">
+<!-- Suggestion Chips -->
+<div class="flex gap-2 items-center overflow-x-auto scrollbar-hide">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mr-2">Suggestions:</span>
+<button class="px-3 py-1 rounded-full border border-outline-variant bg-surface-container-low text-xs text-on-surface-variant hover:border-primary/50 hover:text-primary transition-all whitespace-nowrap">Compare Q3 SEC Filings</button>
+<button class="px-3 py-1 rounded-full border border-outline-variant bg-surface-container-low text-xs text-on-surface-variant hover:border-primary/50 hover:text-primary transition-all whitespace-nowrap">Analyze Risk Factors</button>
+<button class="px-3 py-1 rounded-full border border-outline-variant bg-surface-container-low text-xs text-on-surface-variant hover:border-primary/50 hover:text-primary transition-all whitespace-nowrap">View Price Targets</button>
+</div>
+<!-- Input Bar -->
+<div class="relative">
+<div class="glass-panel rounded-xl flex flex-col focus-within:border-primary/50 focus-within:shadow-[0_0_20px_rgba(0,229,255,0.1)] transition-all">
+<div class="flex items-center px-4 py-3 gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+<input class="w-full bg-transparent border-none text-on-surface focus:ring-0 placeholder:text-on-surface-variant/50 text-sm" placeholder="Ask MarketMind about SEC data, risk factors, or earnings..." type="text"/>
+<button class="p-1.5 rounded-lg bg-primary text-background hover:brightness-110 active:scale-90 transition-all shrink-0">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">arrow_upward</span>
+</button>
+</div>
+<div class="flex items-center justify-between px-4 py-2 bg-surface-container-lowest/50 border-t border-outline-variant/30">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 cursor-pointer group">
+<div class="w-4 h-4 rounded border border-primary bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px] text-background font-bold">check</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary">Search Web</span>
+</div>
+<div class="flex items-center gap-2 cursor-pointer group hover:opacity-80">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">attachment</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Upload CSV</span>
+</div>
+</div>
+<div class="text-[10px] text-on-surface-variant mono-data">CTRL + K to open terminal</div>
+</div>
+</div>
+</div>
+</div>
+</footer>
+</main>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                alert('MarketMind Terminal Command Palette: COMING SOON');
+            }
+        });
+        
+        // Simple hover effect for table rows
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.boxShadow = "inset 4px 0 0 #00E5FF";
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.boxShadow = "none";
+            });
+        });
+    </script>
+</body></html>

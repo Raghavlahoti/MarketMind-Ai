@@ -11,6 +11,7 @@ from app.api.v1.sentiment import router as sentiment_router
 from app.api.v1.search import router as search_router
 from app.api.v1.watchlists import router as watchlists_router
 from app.api.v1.alerts import router as alerts_router
+from app.api.v1.system import router as system_router
 
 api_router = APIRouter()
 
@@ -23,3 +24,5 @@ api_router.include_router(sentiment_router, prefix="/sentiment", tags=["Sentimen
 api_router.include_router(search_router, prefix="/search", tags=["AI Search"])
 api_router.include_router(watchlists_router, prefix="/watchlists", tags=["Watchlists"])
 api_router.include_router(alerts_router, prefix="/alerts", tags=["Alerts"])
+api_router.include_router(system_router, prefix="/system", tags=["System"])
+

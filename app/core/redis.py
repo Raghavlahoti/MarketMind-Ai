@@ -13,6 +13,11 @@ from app.core.config import settings
 
 logger = logging.getLogger("marketmind_ai")
 
+class RedisUnavailableError(Exception):
+    """Raised when Redis connection fails and mock fallback is disabled outside development."""
+    pass
+
+
 # Cache keys prefixes
 KEY_PREFIX_NEWS = "cache:news:"
 KEY_PREFIX_PRICES = "cache:prices:"
@@ -47,11 +52,34 @@ class RedisManager:
             self._is_mock = False
             logger.info("Successfully connected to production Redis database.")
         except Exception as e:
-            logger.warning("Redis connection failed: %s. Falling back to in-memory fakeredis...", e)
-            import fakeredis.aioredis as fake_aioredis
-            self.redis_client = fake_aioredis.FakeRedis(decode_responses=True)
-            self._is_mock = True
-            logger.info("In-memory FakeRedis instance initialized.")
+            if settings.ENV == "development":
+                logger.warning("Redis connection failed: %s. Falling back to in-memory fakeredis...", e)
+                import fakeredis.aioredis as fake_aioredis
+                import asyncio
+                client = fake_aioredis.FakeRedis(decode_responses=True)
+                
+                # Mock enqueue_job to run the task in the background
+                async def mock_enqueue_job(job_name: str, *args, **kwargs):
+                    logger.info("Mock Redis: enqueuing job '%s' with args %s", job_name, args)
+                    if job_name == 'generate_research_report_job':
+                        from app.worker import generate_research_report_job
+                        ctx = {'redis': client}
+                        async def run_job_in_bg():
+                            await asyncio.sleep(0.5)
+                            try:
+                                await generate_research_report_job(ctx, *args, **kwargs)
+                            except Exception as ex:
+                                logger.error("Error running mock job: %s", ex)
+                        asyncio.create_task(run_job_in_bg())
+                    return type('MockJob', (), {'job_id': 'mock-job-id'})()
+                
+                client.enqueue_job = mock_enqueue_job
+                self.redis_client = client
+                self._is_mock = True
+                logger.info("In-memory FakeRedis instance initialized with mock enqueue_job support.")
+            else:
+                logger.error("Redis connection failed in non-development environment: %s", e)
+                raise RedisUnavailableError("Redis service is offline and mock fallback is disabled.")
 
     async def close(self):
         """Closes Redis connections."""

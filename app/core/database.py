@@ -12,12 +12,18 @@ from app.core.logging import logger
 import re
 
 # Create Async Engine with connection pooling config
+is_sqlite = settings.DATABASE_URL.startswith("sqlite")
+engine_kwargs = {
+    "echo": False,
+    "pool_pre_ping": True
+}
+if not is_sqlite:
+    engine_kwargs["pool_size"] = 20
+    engine_kwargs["max_overflow"] = 10
+
 async_engine = create_async_engine(
     settings.DATABASE_URL,
-    echo=False,
-    pool_size=20,
-    max_overflow=10,
-    pool_pre_ping=True
+    **engine_kwargs
 )
 
 # Async Session Factory
